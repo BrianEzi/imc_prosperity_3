@@ -142,10 +142,10 @@ class Trader:
                         orders.append(Order(self.product_resin, best_bid, -qty))
             if pos < self.POSITION_LIMIT:
                 qty = int((self.POSITION_LIMIT - pos) * size_mult)
-                orders.append(Order(self.product_resin, fv - mm_edge, qty))
+                orders.append(Order(self.product_resin, round(fv - mm_edge), qty))
             if pos > -self.POSITION_LIMIT:
                 qty = int((self.POSITION_LIMIT + pos) * size_mult)
-                orders.append(Order(self.product_resin, fv + mm_edge, -qty))
+                orders.append(Order(self.product_resin, round(fv - mm_edge), -qty))
             result[self.product_resin] = orders
 
         # Kelp

@@ -1,13 +1,28 @@
 from datamodel import Order, TradingState, OrderDepth
 from typing import List
 import jsonpickle
-from config_hyper import HYPERPARAMS
-from best_hyperparams import BEST_HYPERPARAMS
 
 class Trader:
     def __init__(self):
 
-        HYPERPARAMS = BEST_HYPERPARAMS
+        HYPERPARAMS = {
+            'KELP_BETA': 0.6811,
+            'KELP_MM_EDGE': 1.0728,
+            'KELP_TAKE_WIDTH': 2.4878,
+            'LATE_DAY_SIZE_FACTOR': 0.7066,
+            'LATE_DAY_SPREAD_FACTOR': 1.8936,
+            'LATE_DAY_TIMESTAMP': 861778,
+            'RESIN_MM_EDGE': 1.9429,
+            'RESIN_TAKE_WIDTH': 8.2455,
+            'SQUID_BETA': 0.5584,
+            'SQUID_LONG_EMA_WINDOW': 36,
+            'SQUID_MM_EDGE': 8.0081,
+            'SQUID_SHORT_EMA_WINDOW': 6,
+            'SQUID_TAKE_WIDTH': 6.4667,
+            'SQUID_TREND_BIAS': 0.7824,
+            'SQUID_TREND_THRESHOLD': 1.2344,
+            'SQUID_VOL_THRESHOLD': 14,
+        }
         
         # Define product identifiers
         self.product_resin = "RAINFOREST_RESIN"
@@ -119,20 +134,20 @@ class Trader:
                 if best_ask <= fv - effective_take_width:
                     qty = min(vol, int((self.POSITION_LIMIT - current_position) * size_multiplier))
                     if qty > 0:
-                        orders_resin.append(Order(resin, best_ask, qty))
+                        orders_resin.append(Order(resin, round(best_ask), qty))
             if resin_depth.buy_orders:
                 best_bid = max(resin_depth.buy_orders.keys())
                 vol = resin_depth.buy_orders[best_bid]
                 if best_bid >= fv + effective_take_width:
                     qty = min(vol, int((self.POSITION_LIMIT + current_position) * size_multiplier))
                     if qty > 0:
-                        orders_resin.append(Order(resin, best_bid, -qty))
+                        orders_resin.append(Order(resin, round(best_bid), -qty))
             if current_position < self.POSITION_LIMIT:
                 qty = int((self.POSITION_LIMIT - current_position) * size_multiplier)
-                orders_resin.append(Order(resin, fv - effective_mm_edge, qty))
+                orders_resin.append(Order(resin, round(fv - effective_mm_edge), qty))
             if current_position > -self.POSITION_LIMIT:
                 qty = int((self.POSITION_LIMIT + current_position) * size_multiplier)
-                orders_resin.append(Order(resin, fv + effective_mm_edge, -qty))
+                orders_resin.append(Order(resin, round(fv + effective_mm_edge), -qty))
             result[resin] = orders_resin
 
         # --------------------------
