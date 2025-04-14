@@ -1,10 +1,11 @@
 from datamodel import Order, TradingState, OrderDepth
+from typing import List
 import jsonpickle
 
 
 class Trader:
     def __init__(self):
-        best_hyperparams = {
+        BEST_HYPERPARAMS = {
             'KELP_BETA': 0.6811,
             'KELP_MM_EDGE': 1.0728,
             'KELP_TAKE_WIDTH': 2.4878,
@@ -26,29 +27,29 @@ class Trader:
         self.POSITION_LIMIT = 50
 
         # Late-day behavior
-        self.LATE_DAY_TIMESTAMP = best_hyperparams['LATE_DAY_TIMESTAMP']
-        self.LATE_DAY_SIZE_FACTOR = best_hyperparams['LATE_DAY_SIZE_FACTOR']
-        self.LATE_DAY_SPREAD_FACTOR = best_hyperparams['LATE_DAY_SPREAD_FACTOR']
+        self.LATE_DAY_TIMESTAMP = BEST_HYPERPARAMS['LATE_DAY_TIMESTAMP']
+        self.LATE_DAY_SIZE_FACTOR = BEST_HYPERPARAMS['LATE_DAY_SIZE_FACTOR']
+        self.LATE_DAY_SPREAD_FACTOR = BEST_HYPERPARAMS['LATE_DAY_SPREAD_FACTOR']
 
         # Resin
         self.RESIN_FAIR_VALUE = 10000
-        self.RESIN_TAKE_WIDTH = best_hyperparams['RESIN_TAKE_WIDTH']
-        self.RESIN_MM_EDGE = best_hyperparams['RESIN_MM_EDGE']
+        self.RESIN_TAKE_WIDTH = BEST_HYPERPARAMS['RESIN_TAKE_WIDTH']
+        self.RESIN_MM_EDGE = BEST_HYPERPARAMS['RESIN_MM_EDGE']
 
         # Kelp
-        self.KELP_TAKE_WIDTH = best_hyperparams['KELP_TAKE_WIDTH']
-        self.KELP_MM_EDGE = best_hyperparams['KELP_MM_EDGE']
-        self.KELP_BETA = best_hyperparams['KELP_BETA']
+        self.KELP_TAKE_WIDTH = BEST_HYPERPARAMS['KELP_TAKE_WIDTH']
+        self.KELP_MM_EDGE = BEST_HYPERPARAMS['KELP_MM_EDGE']
+        self.KELP_BETA = BEST_HYPERPARAMS['KELP_BETA']
 
         # Squid Ink
-        self.SQUID_TAKE_WIDTH = best_hyperparams['SQUID_TAKE_WIDTH']
-        self.SQUID_MM_EDGE = best_hyperparams['SQUID_MM_EDGE']
-        self.SQUID_BETA = best_hyperparams['SQUID_BETA']
-        self.SQUID_TREND_THRESHOLD = best_hyperparams['SQUID_TREND_THRESHOLD']
-        self.SQUID_TREND_BIAS = best_hyperparams['SQUID_TREND_BIAS']
-        self.SQUID_VOL_THRESHOLD = best_hyperparams['SQUID_VOL_THRESHOLD']
-        self.SQUID_SHORT_EMA_WINDOW = best_hyperparams['SQUID_SHORT_EMA_WINDOW']
-        self.SQUID_LONG_EMA_WINDOW = best_hyperparams['SQUID_LONG_EMA_WINDOW']
+        self.SQUID_TAKE_WIDTH = BEST_HYPERPARAMS['SQUID_TAKE_WIDTH']
+        self.SQUID_MM_EDGE = BEST_HYPERPARAMS['SQUID_MM_EDGE']
+        self.SQUID_BETA = BEST_HYPERPARAMS['SQUID_BETA']
+        self.SQUID_TREND_THRESHOLD = BEST_HYPERPARAMS['SQUID_TREND_THRESHOLD']
+        self.SQUID_TREND_BIAS = BEST_HYPERPARAMS['SQUID_TREND_BIAS']
+        self.SQUID_VOL_THRESHOLD = BEST_HYPERPARAMS['SQUID_VOL_THRESHOLD']
+        self.SQUID_SHORT_EMA_WINDOW = BEST_HYPERPARAMS['SQUID_SHORT_EMA_WINDOW']
+        self.SQUID_LONG_EMA_WINDOW = BEST_HYPERPARAMS['SQUID_LONG_EMA_WINDOW']
 
         self.product_resin = "RAINFOREST_RESIN"
         self.product_kelp = "KELP"
@@ -141,10 +142,10 @@ class Trader:
                         orders.append(Order(self.product_resin, best_bid, -qty))
             if pos < self.POSITION_LIMIT:
                 qty = int((self.POSITION_LIMIT - pos) * size_mult)
-                orders.append(Order(self.product_resin, fv - mm_edge, qty))
+                orders.append(Order(self.product_resin, round(fv - mm_edge), qty))
             if pos > -self.POSITION_LIMIT:
                 qty = int((self.POSITION_LIMIT + pos) * size_mult)
-                orders.append(Order(self.product_resin, fv + mm_edge, -qty))
+                orders.append(Order(self.product_resin, round(fv - mm_edge), -qty))
             result[self.product_resin] = orders
 
         # Kelp
