@@ -117,6 +117,18 @@ pbounds = {
 'LATE_DAY_TIMESTAMP': (800000, 900000),  # timestamp after which late-day factors apply
 'LATE_DAY_SIZE_FACTOR': (0.5, 1.0),        # multiplier for size adjustments late in the day
 'LATE_DAY_SPREAD_FACTOR': (1.0, 2.5),      # multiplier for spread adjustments late in the day
+
+'MR_DJEMBES_BETA': (0, 1),
+'MR_DJEMBES_TAKE_WIDTH': (1, 10), 
+'MR_DJEMBES_MM_EDGE': (0, 5),
+
+'MR_JAMS_BETA': (0, 1),
+'MR_JAMS_TAKE_WIDTH': (1, 10), 
+'MR_JAMS_MM_EDGE': (0, 5),
+
+'MR_CROISSANTS_BETA': (0, 1),
+'MR_CROISSANTS_TAKE_WIDTH': (1, 10), 
+'MR_CROISSANTS_MM_EDGE': (0, 5),
 }
 
 optimizer = BayesianOptimization(

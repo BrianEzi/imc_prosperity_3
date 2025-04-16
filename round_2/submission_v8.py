@@ -4,10 +4,44 @@ from typing import List, Optional, Tuple, Dict, Any
 import numpy as np
 import math
 
-try:
-    from best_hyperparams_v4 import BEST_HYPERPARAMS as CONFIG_HYPERPARAMS
-except ImportError:
-    CONFIG_HYPERPARAMS = {}
+# try:
+#     from best_hyperparams_v8 import BEST_HYPERPARAMS as CONFIG_HYPERPARAMS
+# except ImportError:
+#     CONFIG_HYPERPARAMS = {}
+
+CONFIG_HYPERPARAMS = {
+    'ARBITRAGE_QUANTITY': 3,
+    'DEFAULT_SPREAD_MEAN': 14,
+    'KELP_BETA': 0.5178,
+    'KELP_MM_EDGE': 0.6776,
+    'KELP_TAKE_WIDTH': 3.5914,
+    'LATE_DAY_SIZE_FACTOR': 0.821,
+    'LATE_DAY_SPREAD_FACTOR': 2.3806,
+    'LATE_DAY_TIMESTAMP': 813335,
+    'MR_CROISSANTS_BETA': 0.7959,
+    'MR_CROISSANTS_MM_EDGE': 2.7268,
+    'MR_CROISSANTS_TAKE_WIDTH': 7.767,
+    'MR_DJEMBES_BETA': 0.8866,
+    'MR_DJEMBES_MM_EDGE': 3.9451,
+    'MR_DJEMBES_TAKE_WIDTH': 2.5074,
+    'MR_JAMS_BETA': 0.6956,
+    'MR_JAMS_MM_EDGE': 2.3932,
+    'MR_JAMS_TAKE_WIDTH': 8.506,
+    'RESIN_MM_EDGE': 2.7633,
+    'RESIN_TAKE_WIDTH': 12.5748,
+    'ROLLING_WINDOW': 13,
+    'SQUID_BETA': 0.7847,
+    'SQUID_LONG_EMA_WINDOW': 48,
+    'SQUID_MM_EDGE': 6.4652,
+    'SQUID_MOMENTUM_THRESHOLD': 5.3222,
+    'SQUID_SHORT_EMA_WINDOW': 3,
+    'SQUID_TAKE_WIDTH': 4.7532,
+    'SQUID_TREND_BIAS': 1.4927,
+    'SQUID_TREND_THRESHOLD': 2.5147,
+    'SQUID_VOL_THRESHOLD': 19,
+    'ZSCORE_THRESHOLD': 7.2541,
+}
+Profit: 169362
 
 #--- Constants for Basket Arbitrage (defaults or overridden by CONFIG_HYPERPARAMS) ---
 POSITION_LIMIT_BASKET1 = 60
@@ -315,9 +349,9 @@ class Trader:
         from the fair value by more than a configured take width.
         """
         # Hyperparameters for mean reversion components – these can be set via CONFIG_HYPERPARAMS or use defaults.
-        MR_BETA = CONFIG_HYPERPARAMS.get("MR_BETA", 0.5)
-        MR_TAKE_WIDTH = CONFIG_HYPERPARAMS.get("MR_TAKE_WIDTH", 0.5)
-        MR_MM_EDGE = CONFIG_HYPERPARAMS.get("MR_MM_EDGE", 0.25)
+        # MR_BETA = CONFIG_HYPERPARAMS.get("MR_BETA", 0.6)
+        # MR_TAKE_WIDTH = CONFIG_HYPERPARAMS.get("MR_TAKE_WIDTH", 5)
+        # MR_MM_EDGE = CONFIG_HYPERPARAMS.get("MR_MM_EDGE", 2)
 
         for prod, pos_limit in [(self.product_djembes, self.POS_LIMIT_DJEMBES),
                                 (self.product_jams, self.POS_LIMIT_JAMS),
@@ -328,6 +362,11 @@ class Trader:
             # Ensure there is market data on both sides.
             if not (depth.buy_orders and depth.sell_orders):
                 continue
+            
+            MR_BETA = CONFIG_HYPERPARAMS.get(f"MR_{prod}_BETA", 0.6)
+            MR_TAKE_WIDTH = CONFIG_HYPERPARAMS.get(f"MR_{prod}_TAKE_WIDTH", 5)
+            MR_MM_EDGE = CONFIG_HYPERPARAMS.get(f"MR_{prod}_MM_EDGE", 2)
+
 
             best_bid = max(depth.buy_orders.keys())
             best_ask = min(depth.sell_orders.keys())
